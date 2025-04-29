@@ -15,8 +15,8 @@
  */
 
 import type { Client, Osdk } from "@osdk/client";
-import type { Person } from "@osdk/client.test.ontology";
 import { Task } from "@osdk/client.test.ontology";
+import type { Employee, Person } from "@osdk/client.test.ontology";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createEditBatch } from "./createEditBatch.js";
 import type { EditBatch } from "./EditBatch.js";
@@ -24,6 +24,7 @@ import type { Edits } from "./types.js";
 
 type TestEditScope =
   | Edits.Object<Task>
+  | Edits.Object<Employee>
   | Edits.Link<Task, "RP">;
 
 describe(createEditBatch, () => {

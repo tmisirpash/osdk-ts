@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-import type { Client } from "@osdk/client";
+import type {
+  Client,
+  CompileTimeMetadata,
+  OsdkObjectPropertyType,
+  PropertyKeys,
+} from "@osdk/client";
 import type { EditBatch } from "./EditBatch.js";
 import type {
   AddLinkEdits,
   AnyEdit,
   CreateObjectEdits,
   DeleteObjectEdits,
+  PartialForOptionalProperties,
   RemoveLinkEdits,
   UpdateObjectEdits,
 } from "./types.js";
@@ -54,9 +60,15 @@ class InMemoryEditBatch<X extends AnyEdit = never> implements EditBatch<X> {
     } as L);
   }
 
-  public create<O extends CreateObjectEdits<X>>(
-    obj: O["obj"],
-    properties: O["properties"],
+  public create<O extends CreateObjectEdits<X>["obj"]>(
+    obj: O,
+    properties: PartialForOptionalProperties<
+      {
+        [P in PropertyKeys<O>]: OsdkObjectPropertyType<
+          CompileTimeMetadata<O>["properties"][P]
+        >;
+      }
+    >,
   ): void {
     this.edits.push({
       type: "createObject",

@@ -15,10 +15,16 @@
  */
 
 import type {
+  CompileTimeMetadata,
+  OsdkObjectPropertyType,
+  PropertyKeys,
+} from "@osdk/client";
+import type {
   AddLinkEdits,
   AnyEdit,
   CreateObjectEdits,
   DeleteObjectEdits,
+  PartialForOptionalProperties,
   RemoveLinkEdits,
   UpdateObjectEdits,
 } from "./types.js";
@@ -36,9 +42,15 @@ export interface EditBatch<X extends AnyEdit = never> {
     target: L["target"],
   ) => void;
 
-  create: <O extends CreateObjectEdits<X>>(
-    obj: O["obj"],
-    properties: O["properties"],
+  create: <O extends CreateObjectEdits<X>["obj"]>(
+    obj: O,
+    properties: PartialForOptionalProperties<
+      {
+        [P in PropertyKeys<O>]: OsdkObjectPropertyType<
+          CompileTimeMetadata<O>["properties"][P]
+        >;
+      }
+    >,
   ) => void;
 
   delete: <O extends DeleteObjectEdits<X>>(

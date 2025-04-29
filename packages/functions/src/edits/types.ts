@@ -64,24 +64,17 @@ export interface RemoveLink<
     ObjectMetadata.Link<infer T, any> ? ObjectLocator<T> : never;
 }
 
-type PartialForOptionalProperties<T> =
+export type PartialForOptionalProperties<T> =
   & {
     [K in keyof T as undefined extends T[K] ? K : never]?: T[K];
   }
   & {
-    [K in keyof T as undefined extends T[K] ? never : K]-?: T[K];
+    [K in keyof T as undefined extends T[K] ? never : K]: T[K];
   };
 
 export interface CreateObject<S extends ObjectTypeDefinition> {
   type: "createObject";
   obj: S;
-  properties: PartialForOptionalProperties<
-    {
-      [P in PropertyKeys<S>]: OsdkObjectPropertyType<
-        CompileTimeMetadata<S>["properties"][P]
-      >;
-    }
-  >;
 }
 
 export interface DeleteObject<S extends ObjectTypeDefinition> {
